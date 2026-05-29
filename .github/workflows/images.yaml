@@ -7,7 +7,9 @@ on:
       - "services/**"
       - "packages/**"
       - "proto/**"
+      - "frontend/**"
       - "Dockerfile"
+      - "frontend/Dockerfile"
       - ".github/workflows/images.yaml"
 
 permissions:
@@ -19,15 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service:
-          - api-gateway
-          - catalog-service
-          - cart-service
-          - user-service
-          - order-service
-          - inventory-service
-          - payment-service
-          - notification-service
+        include:
+          - { image: api-gateway,          dockerfile: Dockerfile,          build_args: "SERVICE=api-gateway" }
+          - { image: catalog-service,      dockerfile: Dockerfile,          build_args: "SERVICE=catalog-service" }
+          - { image: cart-service,         dockerfile: Dockerfile,          build_args: "SERVICE=cart-service" }
+          - { image: user-service,         dockerfile: Dockerfile,          build_args: "SERVICE=user-service" }
+          - { image: order-service,        dockerfile: Dockerfile,          build_args: "SERVICE=order-service" }
+          - { image: inventory-service,    dockerfile: Dockerfile,          build_args: "SERVICE=inventory-service" }
+          - { image: payment-service,      dockerfile: Dockerfile,          build_args: "SERVICE=payment-service" }
+          - { image: notification-service, dockerfile: Dockerfile,          build_args: "SERVICE=notification-service" }
+          - { image: frontend,             dockerfile: frontend/Dockerfile, build_args: "" }
     steps:
       - uses: actions/checkout@v4
 
@@ -46,15 +49,14 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          file: Dockerfile
+          file: ${{ matrix.dockerfile }}
           push: true
-          build-args: |
-            SERVICE=${{ matrix.service }}
+          build-args: ${{ matrix.build_args }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ matrix.service }}:${{ steps.tag.outputs.tag }}
-            ghcr.io/${{ github.repository_owner }}/${{ matrix.service }}:latest
-          cache-from: type=gha,scope=${{ matrix.service }}
-          cache-to:   type=gha,mode=max,scope=${{ matrix.service }}
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:${{ steps.tag.outputs.tag }}
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}:latest
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to:   type=gha,mode=max,scope=${{ matrix.image }}
 
   bump-manifests:
     needs: build
