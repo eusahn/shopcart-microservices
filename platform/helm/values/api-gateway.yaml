@@ -1,7 +1,7 @@
 serviceName: api-gateway
 image:
   repository: ghcr.io/eusahn/api-gateway
-  tag: "0.1.0"
+  tag: "55c182d"
   pullPolicy: IfNotPresent
 replicas: 2
 ports: { http: 8080, grpc: 0, metrics: 9090 }

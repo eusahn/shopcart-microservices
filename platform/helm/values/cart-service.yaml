@@ -1,7 +1,7 @@
 serviceName: cart-service
 image:
   repository: ghcr.io/eusahn/cart-service
-  tag: "0.1.0"
+  tag: "55c182d"
   pullPolicy: IfNotPresent
 ports: { http: 0, grpc: 50051, metrics: 9090 }
 env:
