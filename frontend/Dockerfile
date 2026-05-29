@@ -1,6 +1,8 @@
 # Vite 8 / React 19 SPA -> static files served by nginx.
+# Uses glibc (slim) for the builder because Vite 8's rolldown bundler doesn't
+# ship musl/alpine native bindings.
 
-FROM node:20.18-alpine AS deps
+FROM node:22-slim AS deps
 RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
 WORKDIR /app
 COPY frontend/package.json ./frontend/package.json
