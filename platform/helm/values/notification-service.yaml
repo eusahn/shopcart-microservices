@@ -1,0 +1,9 @@
+serviceName: notification-service
+image: { repository: shopcart/notification-service, tag: "0.1.0" }
+ports: { http: 0, grpc: 0, metrics: 9090 }
+env:
+  SERVICE_NAME: notification-service
+  METRICS_PORT: "9090"
+  KAFKA_BROKERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:9092"
+  KAFKA_GROUP_ID: "notification-service"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4318"

@@ -1,0 +1,25 @@
+serviceName: order-service
+image: { repository: shopcart/order-service, tag: "0.1.0" }
+replicas: 2
+ports: { http: 0, grpc: 50051, metrics: 9090 }
+
+# Demonstrate Argo Rollouts on this one service.
+rollout:
+  enabled: true
+  steps:
+    - setWeight: 20
+    - pause: { duration: 30s }
+    - setWeight: 50
+    - pause: { duration: 60s }
+    - setWeight: 100
+
+env:
+  SERVICE_NAME: order-service
+  GRPC_PORT: "50051"
+  METRICS_PORT: "9090"
+  CART_SERVICE_URL: "http://cart-service.shopcart.svc.cluster.local:50051"
+  CATALOG_SERVICE_URL: "http://catalog-service.shopcart.svc.cluster.local:50051"
+  KAFKA_BROKERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:9092"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4318"
+envFrom:
+  - secretRef: { name: order-db }

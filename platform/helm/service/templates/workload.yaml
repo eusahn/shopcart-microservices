@@ -1,0 +1,54 @@
+{{- $podSpec := dict
+  "containers" (list (dict
+    "name" (include "svc.name" .)
+    "image" (printf "%s:%s" .Values.image.repository .Values.image.tag)
+    "imagePullPolicy" .Values.image.pullPolicy
+    "ports" (list)
+    "env" (list)
+    "envFrom" (list)
+    "resources" .Values.resources
+    "livenessProbe" .Values.probes.liveness
+    "readinessProbe" .Values.probes.readiness
+  ))
+-}}
+{{/* Container ports */}}
+{{- $c := index $podSpec.containers 0 -}}
+{{- if gt (int .Values.ports.grpc)    0 }}{{- $_ := set $c "ports" (append $c.ports (dict "name" "grpc"    "containerPort" (int .Values.ports.grpc))) }}{{- end }}
+{{- if gt (int .Values.ports.http)    0 }}{{- $_ := set $c "ports" (append $c.ports (dict "name" "http"    "containerPort" (int .Values.ports.http))) }}{{- end }}
+{{- if gt (int .Values.ports.metrics) 0 }}{{- $_ := set $c "ports" (append $c.ports (dict "name" "metrics" "containerPort" (int .Values.ports.metrics))) }}{{- end }}
+{{- range $k, $v := .Values.env }}{{- $_ := set $c "env" (append $c.env (dict "name" $k "value" (toString $v))) }}{{- end }}
+{{- range .Values.envFrom }}{{- $_ := set $c "envFrom" (append $c.envFrom .) }}{{- end }}
+{{- if not .Values.rollout.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "svc.name" . }}
+  labels: {{- include "svc.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels: {{- include "svc.selector" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "svc.selector" . | nindent 8 }}
+      annotations: {{- include "svc.podAnnotations" . | nindent 8 }}
+    spec: {{- toYaml $podSpec | nindent 6 }}
+{{- else }}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "svc.name" . }}
+  labels: {{- include "svc.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels: {{- include "svc.selector" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "svc.selector" . | nindent 8 }}
+      annotations: {{- include "svc.podAnnotations" . | nindent 8 }}
+    spec: {{- toYaml $podSpec | nindent 6 }}
+  strategy:
+    canary:
+      steps: {{- toYaml .Values.rollout.steps | nindent 8 }}
+{{- end }}

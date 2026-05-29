@@ -1,0 +1,30 @@
+node_modules/
+dist/
+.turbo/
+coverage/
+*.log
+.env
+.env.local
+.DS_Store
+*.tsbuildinfo
+
+# generated proto code
+packages/proto/src/gen/
+
+# tilt
+tilt_modules/
+.tiltbuild/
+
+# kube
+.kube/
+kubeconfig
+
+# editor
+.vscode/
+.idea/
+
+# claude code local settings
+.claude/
+
+# local-only env overrides (committed: .env.development / .env.production)
+.env.*.local

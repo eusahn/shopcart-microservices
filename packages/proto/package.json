@@ -1,0 +1,36 @@
+{
+  "name": "@shopcart/proto",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./catalog": "./dist/gen/catalog/v1/catalog_pb.js",
+    "./catalog-connect": "./dist/gen/catalog/v1/catalog_connect.js",
+    "./cart": "./dist/gen/cart/v1/cart_pb.js",
+    "./cart-connect": "./dist/gen/cart/v1/cart_connect.js",
+    "./user": "./dist/gen/user/v1/user_pb.js",
+    "./user-connect": "./dist/gen/user/v1/user_connect.js",
+    "./order": "./dist/gen/order/v1/order_pb.js",
+    "./order-connect": "./dist/gen/order/v1/order_connect.js",
+    "./inventory": "./dist/gen/inventory/v1/inventory_pb.js",
+    "./inventory-connect": "./dist/gen/inventory/v1/inventory_connect.js",
+    "./payment": "./dist/gen/payment/v1/payment_pb.js",
+    "./payment-connect": "./dist/gen/payment/v1/payment_connect.js",
+    "./events": "./dist/gen/events/v1/events_pb.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist src/gen"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^1.10.0",
+    "@connectrpc/connect": "^1.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}

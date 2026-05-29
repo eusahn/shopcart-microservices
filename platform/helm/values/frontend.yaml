@@ -1,0 +1,17 @@
+serviceName: frontend
+image: { repository: shopcart/frontend, tag: "0.1.0" }
+replicas: 1
+ports: { http: 8080, grpc: 0, metrics: 0 }
+linkerd: { inject: true }
+serviceMonitor: { enabled: false }
+probes:
+  liveness:
+    httpGet: { path: /healthz, port: http }
+    initialDelaySeconds: 3
+    periodSeconds: 10
+  readiness:
+    httpGet: { path: /healthz, port: http }
+    initialDelaySeconds: 1
+    periodSeconds: 5
+env: {}
+envFrom: []

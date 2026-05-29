@@ -1,0 +1,51 @@
+image:
+  repository: shopcart/placeholder
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+replicas: 1
+serviceName: ""        # required; pnpm package name suffix and k8s name
+
+# Toggle between a standard Deployment and an Argo Rollout (used by order-service).
+rollout:
+  enabled: false
+  strategy: canary
+  steps:
+    - setWeight: 20
+    - pause:    { duration: 30s }
+    - setWeight: 50
+    - pause:    { duration: 60s }
+    - setWeight: 100
+
+ports:
+  http:    0           # 0 = disabled
+  grpc:    50051
+  metrics: 9090
+
+env: {}                # arbitrary key/value pairs
+envFrom: []            # list of secretRef / configMapRef names
+
+linkerd:
+  inject: true
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 96Mi
+  limits:
+    cpu: 500m
+    memory: 384Mi
+
+serviceMonitor:
+  enabled: true
+  interval: 15s
+
+probes:
+  liveness:
+    httpGet: { path: /healthz, port: metrics }
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  readiness:
+    httpGet: { path: /readyz, port: metrics }
+    initialDelaySeconds: 3
+    periodSeconds: 5

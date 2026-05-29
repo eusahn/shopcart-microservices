@@ -1,0 +1,15 @@
+# Resilience experiment: kill one order-service pod every 5 minutes.
+# Argo Rollouts + Linkerd retries should keep the gateway responsive.
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: order-service-pod-kill
+  namespace: shopcart
+spec:
+  action: pod-kill
+  mode: one
+  selector:
+    labelSelectors:
+      "app.kubernetes.io/name": "order-service"
+  scheduler:
+    cron: "@every 5m"

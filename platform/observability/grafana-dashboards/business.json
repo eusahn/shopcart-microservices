@@ -1,0 +1,29 @@
+{
+  "title": "ShopCart — Business",
+  "uid": "shopcart-business",
+  "schemaVersion": 39,
+  "tags": ["shopcart"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "title": "Orders placed (rate / min)",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "expr": "60 * sum(rate(kafka_producer_request_total{topic=\"orders.events\"}[1m]))" }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+    },
+    {
+      "title": "Consumer lag — inventory-service",
+      "type": "timeseries",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "expr": "sum by (topic) (kafka_consumergroup_lag{consumergroup=\"inventory-service\"})", "legendFormat": "{{topic}}" }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }
+    }
+  ]
+}

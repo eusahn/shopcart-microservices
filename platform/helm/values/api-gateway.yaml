@@ -1,0 +1,16 @@
+serviceName: api-gateway
+image: { repository: shopcart/api-gateway, tag: "0.1.0" }
+replicas: 2
+ports: { http: 8080, grpc: 0, metrics: 9090 }
+env:
+  SERVICE_NAME: api-gateway
+  HTTP_PORT: "8080"
+  METRICS_PORT: "9090"
+  CATALOG_SERVICE_URL: "http://catalog-service.shopcart.svc.cluster.local:50051"
+  CART_SERVICE_URL:    "http://cart-service.shopcart.svc.cluster.local:50051"
+  USER_SERVICE_URL:    "http://user-service.shopcart.svc.cluster.local:50051"
+  ORDER_SERVICE_URL:   "http://order-service.shopcart.svc.cluster.local:50051"
+  PAYMENT_SERVICE_URL: "http://payment-service.shopcart.svc.cluster.local:50051"
+  KEYCLOAK_ISSUER:     "http://keycloak.platform.svc.cluster.local/realms/shopcart"
+  KEYCLOAK_AUDIENCE:   "account"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4318"

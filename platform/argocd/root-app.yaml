@@ -1,0 +1,25 @@
+# App-of-Apps: this single Application points Argo CD at the apps/ directory,
+# which contains one Application per service. Add a new service file there and
+# Argo CD will start tracking it automatically.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shopcart-root
+  namespace: argocd
+  finalizers: [resources-finalizer.argocd.argoproj.io]
+spec:
+  project: shopcart
+  source:
+    repoURL: https://github.com/eusahn/shopcart-microservices.git  # update to your repo
+    targetRevision: main
+    path: platform/argocd/apps
+    directory:
+      recurse: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions: [CreateNamespace=true]

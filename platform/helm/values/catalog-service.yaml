@@ -1,0 +1,10 @@
+serviceName: catalog-service
+image: { repository: shopcart/catalog-service, tag: "0.1.0" }
+ports: { http: 0, grpc: 50051, metrics: 9090 }
+env:
+  SERVICE_NAME: catalog-service
+  GRPC_PORT: "50051"
+  METRICS_PORT: "9090"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4318"
+envFrom:
+  - secretRef: { name: catalog-db }

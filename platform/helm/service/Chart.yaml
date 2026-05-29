@@ -1,0 +1,6 @@
+apiVersion: v2
+name: shopcart-service
+description: Reusable Helm chart for any shopcart Node service. Toggles between Deployment and Argo Rollout via `rollout.enabled`.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

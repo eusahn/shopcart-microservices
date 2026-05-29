@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package user.v1;
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc UpsertProfile(UpsertProfileRequest) returns (UserProfile);
+  rpc ListAddresses(ListAddressesRequest) returns (ListAddressesResponse);
+  rpc AddAddress(AddAddressRequest) returns (Address);
+}
+
+message UserProfile {
+  string id = 1;
+  string email = 2;
+  string display_name = 3;
+  string phone = 4;
+  int64 created_at_unix = 5;
+}
+
+message Address {
+  string id = 1;
+  string user_id = 2;
+  string line1 = 3;
+  string line2 = 4;
+  string city = 5;
+  string region = 6;
+  string postal_code = 7;
+  string country = 8;
+  bool is_default = 9;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUserResponse {
+  UserProfile profile = 1;
+}
+
+message UpsertProfileRequest {
+  string id = 1;
+  string email = 2;
+  string display_name = 3;
+  string phone = 4;
+}
+
+message ListAddressesRequest {
+  string user_id = 1;
+}
+
+message ListAddressesResponse {
+  repeated Address addresses = 1;
+}
+
+message AddAddressRequest {
+  string user_id = 1;
+  string line1 = 2;
+  string line2 = 3;
+  string city = 4;
+  string region = 5;
+  string postal_code = 6;
+  string country = 7;
+  bool is_default = 8;
+}

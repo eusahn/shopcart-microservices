@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package payment.v1;
+
+service PaymentService {
+  rpc Charge(ChargeRequest) returns (ChargeResponse);
+  rpc Refund(RefundRequest) returns (RefundResponse);
+}
+
+enum PaymentStatus {
+  PAYMENT_STATUS_UNSPECIFIED = 0;
+  PAYMENT_STATUS_AUTHORIZED = 1;
+  PAYMENT_STATUS_CAPTURED = 2;
+  PAYMENT_STATUS_DECLINED = 3;
+  PAYMENT_STATUS_REFUNDED = 4;
+}
+
+message ChargeRequest {
+  string order_id = 1;
+  string user_id = 2;
+  int64 amount_cents = 3;
+  string currency = 4;
+  string idempotency_key = 5;
+}
+
+message ChargeResponse {
+  string payment_id = 1;
+  PaymentStatus status = 2;
+  string decline_reason = 3;
+}
+
+message RefundRequest {
+  string payment_id = 1;
+  int64 amount_cents = 2;
+}
+
+message RefundResponse {
+  PaymentStatus status = 1;
+}

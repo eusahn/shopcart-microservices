@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package catalog.v1;
+
+service CatalogService {
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+  rpc SearchProducts(SearchProductsRequest) returns (SearchProductsResponse);
+}
+
+message Product {
+  string id = 1;
+  string sku = 2;
+  string name = 3;
+  string description = 4;
+  int64 price_cents = 5;
+  string currency = 6;
+  string category = 7;
+  string image_url = 8;
+  int32 stock = 9;
+}
+
+message GetProductRequest {
+  string id = 1;
+}
+
+message GetProductResponse {
+  Product product = 1;
+}
+
+message ListProductsRequest {
+  string category = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+  string next_page_token = 2;
+}
+
+message SearchProductsRequest {
+  string query = 1;
+  int32 page_size = 2;
+}
+
+message SearchProductsResponse {
+  repeated Product products = 1;
+}

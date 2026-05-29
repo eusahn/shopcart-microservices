@@ -1,0 +1,20 @@
+# Cut inventory-service off from Kafka for 90s. Lag should grow, then recover.
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: inventory-kafka-partition
+  namespace: shopcart
+spec:
+  action: partition
+  mode: all
+  selector:
+    labelSelectors:
+      "app.kubernetes.io/name": "inventory-service"
+  direction: to
+  target:
+    mode: all
+    selector:
+      namespaces: [kafka]
+      labelSelectors:
+        "strimzi.io/cluster": "kafka"
+  duration: "90s"

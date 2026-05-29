@@ -1,0 +1,24 @@
+# Inject 200ms±50ms latency between cart-service and catalog-service.
+# Watch p95 latency in Grafana — Linkerd retries should kick in.
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: cart-to-catalog-delay
+  namespace: shopcart
+spec:
+  action: delay
+  mode: all
+  selector:
+    labelSelectors:
+      "app.kubernetes.io/name": "cart-service"
+  delay:
+    latency: "200ms"
+    jitter: "50ms"
+    correlation: "25"
+  direction: to
+  target:
+    mode: all
+    selector:
+      labelSelectors:
+        "app.kubernetes.io/name": "catalog-service"
+  duration: "5m"

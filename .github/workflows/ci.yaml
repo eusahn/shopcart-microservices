@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+      - run: pnpm install --frozen-lockfile=false
+      - run: pnpm proto:lint
+      - run: pnpm proto:gen
+      - run: pnpm typecheck
+      - run: pnpm test
+
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - name: helm lint each values file
+        run: |
+          for f in platform/helm/values/*.yaml; do
+            echo "::group::$f"
+            helm lint platform/helm/service -f "$f"
+            echo "::endgroup::"
+          done

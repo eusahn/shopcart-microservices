@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shopcart-dashboards
+  namespace: observability
+  labels:
+    grafana_dashboard: "1"
+data:
+  golden-signals.json: |
+    # Will be replaced at apply time by the bootstrap script with the actual JSON.
+    # Use:
+    #   kubectl -n observability create configmap shopcart-dashboards \
+    #     --from-file=platform/observability/grafana-dashboards/ \
+    #     --dry-run=client -o yaml | kubectl apply -f -

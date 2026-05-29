@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package cart.v1;
+
+service CartService {
+  rpc GetCart(GetCartRequest) returns (GetCartResponse);
+  rpc AddItem(AddItemRequest) returns (Cart);
+  rpc UpdateItem(UpdateItemRequest) returns (Cart);
+  rpc RemoveItem(RemoveItemRequest) returns (Cart);
+  rpc ClearCart(ClearCartRequest) returns (Cart);
+}
+
+message CartItem {
+  string product_id = 1;
+  string sku = 2;
+  string name = 3;
+  int32 quantity = 4;
+  int64 unit_price_cents = 5;
+}
+
+message Cart {
+  string user_id = 1;
+  repeated CartItem items = 2;
+  int64 subtotal_cents = 3;
+  string currency = 4;
+  int64 updated_at_unix = 5;
+}
+
+message GetCartRequest {
+  string user_id = 1;
+}
+
+message GetCartResponse {
+  Cart cart = 1;
+}
+
+message AddItemRequest {
+  string user_id = 1;
+  string product_id = 2;
+  int32 quantity = 3;
+}
+
+message UpdateItemRequest {
+  string user_id = 1;
+  string product_id = 2;
+  int32 quantity = 3;
+}
+
+message RemoveItemRequest {
+  string user_id = 1;
+  string product_id = 2;
+}
+
+message ClearCartRequest {
+  string user_id = 1;
+}

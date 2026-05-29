@@ -1,0 +1,11 @@
+serviceName: payment-service
+image: { repository: shopcart/payment-service, tag: "0.1.0" }
+ports: { http: 0, grpc: 50051, metrics: 9090 }
+env:
+  SERVICE_NAME: payment-service
+  GRPC_PORT: "50051"
+  METRICS_PORT: "9090"
+  KAFKA_BROKERS: "kafka-kafka-bootstrap.kafka.svc.cluster.local:9092"
+  KAFKA_GROUP_ID: "payment-service"
+  FAILURE_RATE: "0.05"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4318"

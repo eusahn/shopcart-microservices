@@ -1,0 +1,85 @@
+name: build-images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "services/**"
+      - "packages/**"
+      - "proto/**"
+      - "Dockerfile"
+      - ".github/workflows/images.yaml"
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - api-gateway
+          - catalog-service
+          - cart-service
+          - user-service
+          - order-service
+          - inventory-service
+          - payment-service
+          - notification-service
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image tag
+        id: tag
+        run: echo "tag=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          build-args: |
+            SERVICE=${{ matrix.service }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.service }}:${{ steps.tag.outputs.tag }}
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.service }}:latest
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to:   type=gha,mode=max,scope=${{ matrix.service }}
+
+  bump-manifests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update image tags in values files
+        run: |
+          SHA=$(git rev-parse --short HEAD)
+          for f in platform/helm/values/*.yaml; do
+            svc=$(basename "$f" .yaml)
+            sed -i.bak -E \
+              "s|repository: shopcart/${svc}.*|repository: ghcr.io/${{ github.repository_owner }}/${svc}|" \
+              "$f"
+            sed -i.bak -E "s|tag: \".*\"|tag: \"${SHA}\"|" "$f"
+            rm -f "$f.bak"
+          done
+      - name: Commit bump
+        run: |
+          git config user.name  "ci-bot"
+          git config user.email "ci-bot@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add platform/helm/values
+            git commit -m "ci: bump images to $(git rev-parse --short HEAD~1)"
+            git push
+          fi

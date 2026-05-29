@@ -1,0 +1,11 @@
+serviceName: cart-service
+image: { repository: shopcart/cart-service, tag: "0.1.0" }
+ports: { http: 0, grpc: 50051, metrics: 9090 }
+env:
+  SERVICE_NAME: cart-service
+  GRPC_PORT: "50051"
+  METRICS_PORT: "9090"
+  CATALOG_SERVICE_URL: "http://catalog-service.shopcart.svc.cluster.local:50051"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4318"
+envFrom:
+  - secretRef: { name: cart-redis }

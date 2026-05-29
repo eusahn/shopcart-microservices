@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package inventory.v1;
+
+service InventoryService {
+  rpc GetStock(GetStockRequest) returns (GetStockResponse);
+  rpc Reserve(ReserveRequest) returns (ReserveResponse);
+  rpc Release(ReleaseRequest) returns (ReleaseResponse);
+}
+
+message StockLevel {
+  string product_id = 1;
+  int32 available = 2;
+  int32 reserved = 3;
+}
+
+message GetStockRequest {
+  repeated string product_ids = 1;
+}
+
+message GetStockResponse {
+  repeated StockLevel levels = 1;
+}
+
+message ReserveLine {
+  string product_id = 1;
+  int32 quantity = 2;
+}
+
+message ReserveRequest {
+  string order_id = 1;
+  repeated ReserveLine lines = 2;
+}
+
+message ReserveResponse {
+  bool ok = 1;
+  repeated string out_of_stock_product_ids = 2;
+}
+
+message ReleaseRequest {
+  string order_id = 1;
+}
+
+message ReleaseResponse {
+  bool ok = 1;
+}

@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: shopcart
+  namespace: argocd
+spec:
+  description: ShopCart microservices and the platform components they depend on.
+  sourceRepos:
+    - "*"     # tighten to your repo URL in real life
+  destinations:
+    - { server: "https://kubernetes.default.svc", namespace: shopcart       }
+    - { server: "https://kubernetes.default.svc", namespace: platform       }
+    - { server: "https://kubernetes.default.svc", namespace: observability  }
+    - { server: "https://kubernetes.default.svc", namespace: argo-rollouts  }
+  clusterResourceWhitelist:
+    - { group: "*", kind: "*" }
+  namespaceResourceWhitelist:
+    - { group: "*", kind: "*" }
