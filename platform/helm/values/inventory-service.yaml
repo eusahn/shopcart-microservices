@@ -1,5 +1,8 @@
 serviceName: inventory-service
-image: { repository: ghcr.io/eusahn/inventory-service
+image:
+  repository: ghcr.io/eusahn/inventory-service
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
 ports: { http: 0, grpc: 50051, metrics: 9090 }
 env:
   SERVICE_NAME: inventory-service

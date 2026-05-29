@@ -68,12 +68,13 @@ jobs:
       - name: Update image tags in values files
         run: |
           SHA=$(git rev-parse --short HEAD)
+          OWNER="${{ github.repository_owner }}"
           for f in platform/helm/values/*.yaml; do
             svc=$(basename "$f" .yaml)
-            sed -i.bak -E \
-              "s|repository: shopcart/${svc}.*|repository: ghcr.io/${{ github.repository_owner }}/${svc}|" \
-              "$f"
-            sed -i.bak -E "s|tag: \".*\"|tag: \"${SHA}\"|" "$f"
+            # Anchor the repository pattern to end-of-line so we don't eat trailing YAML.
+            # Block-style assumed: `  repository: ghcr.io/<owner>/<svc>` on its own line.
+            sed -i.bak -E "s|^([[:space:]]*)repository:[[:space:]]+.*${svc}\$|\\1repository: ghcr.io/${OWNER}/${svc}|" "$f"
+            sed -i.bak -E "s|^([[:space:]]*)tag:[[:space:]]+\".*\"\$|\\1tag: \"${SHA}\"|" "$f"
             rm -f "$f.bak"
           done
       - name: Commit bump

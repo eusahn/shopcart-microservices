@@ -1,5 +1,8 @@
 serviceName: notification-service
-image: { repository: ghcr.io/eusahn/notification-service
+image:
+  repository: ghcr.io/eusahn/notification-service
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
 ports: { http: 0, grpc: 0, metrics: 9090 }
 env:
   SERVICE_NAME: notification-service
