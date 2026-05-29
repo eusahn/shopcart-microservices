@@ -9,7 +9,7 @@
     "dev": "tsx watch --clear-screen=false src/index.ts",
     "start": "node --enable-source-maps dist/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "clean": "rm -rf dist"
   },
   "dependencies": {

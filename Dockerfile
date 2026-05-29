@@ -42,8 +42,10 @@ WORKDIR /app
 COPY --from=builder /repo /repo
 WORKDIR /repo/services/${SERVICE}
 
-# Drop devDependencies for the slim runtime layer
-RUN pnpm --filter "@shopcart/${SERVICE}..." --prod deploy /app/svc
+# Drop devDependencies for the slim runtime layer.
+# `pnpm deploy` only accepts ONE project filter — no `...` recursive selector.
+# It still pulls in the service's workspace deps from the lockfile.
+RUN pnpm --filter "@shopcart/${SERVICE}" --prod deploy /app/svc
 
 WORKDIR /app/svc
 USER node
