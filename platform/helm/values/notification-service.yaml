@@ -1,5 +1,5 @@
 serviceName: notification-service
-image: { repository: shopcart/notification-service, tag: "0.1.0" }
+image: { repository: ghcr.io/eusahn/notification-service
 ports: { http: 0, grpc: 0, metrics: 9090 }
 env:
   SERVICE_NAME: notification-service

@@ -1,5 +1,5 @@
 serviceName: order-service
-image: { repository: shopcart/order-service, tag: "0.1.0" }
+image: { repository: ghcr.io/eusahn/order-service
 replicas: 2
 ports: { http: 0, grpc: 50051, metrics: 9090 }
 

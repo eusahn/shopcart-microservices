@@ -1,5 +1,5 @@
 serviceName: api-gateway
-image: { repository: shopcart/api-gateway, tag: "0.1.0" }
+image: { repository: ghcr.io/eusahn/api-gateway
 replicas: 2
 ports: { http: 8080, grpc: 0, metrics: 9090 }
 env:

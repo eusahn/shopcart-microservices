@@ -1,5 +1,5 @@
 serviceName: user-service
-image: { repository: shopcart/user-service, tag: "0.1.0" }
+image: { repository: ghcr.io/eusahn/user-service
 ports: { http: 0, grpc: 50051, metrics: 9090 }
 env:
   SERVICE_NAME: user-service
