@@ -16,13 +16,27 @@ helm upgrade --install kps prometheus-community/kube-prometheus-stack \
   --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
   --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false
 
-# Loki for logs
+# Loki for logs (single-binary, filesystem). The chart still requires bucket
+# names even when not using object storage — set placeholders.
 helm upgrade --install loki grafana/loki \
   --namespace observability \
   --set loki.auth_enabled=false \
   --set loki.commonConfig.replication_factor=1 \
+  --set loki.storage.type=filesystem \
+  --set loki.storage.bucketNames.chunks=chunks \
+  --set loki.storage.bucketNames.ruler=ruler \
+  --set loki.storage.bucketNames.admin=admin \
+  --set loki.schemaConfig.configs[0].from=2024-01-01 \
+  --set loki.schemaConfig.configs[0].store=tsdb \
+  --set loki.schemaConfig.configs[0].object_store=filesystem \
+  --set loki.schemaConfig.configs[0].schema=v13 \
+  --set loki.schemaConfig.configs[0].index.prefix=loki_index_ \
+  --set loki.schemaConfig.configs[0].index.period=24h \
   --set singleBinary.replicas=1 \
   --set deploymentMode=SingleBinary \
+  --set read.replicas=0 \
+  --set write.replicas=0 \
+  --set backend.replicas=0 \
   --set chunksCache.enabled=false \
   --set resultsCache.enabled=false
 

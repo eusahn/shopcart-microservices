@@ -69,7 +69,7 @@ kubectl -n shopcart create secret generic cart-redis \
 
 # --- Kafka (KRaft) ---
 cat <<EOF | kubectl apply -f -
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
 metadata:
   name: dual-role
@@ -87,7 +87,7 @@ spec:
         size: 5Gi
         deleteClaim: true
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: Kafka
 metadata:
   name: kafka
@@ -97,8 +97,8 @@ metadata:
     strimzi.io/kraft: enabled
 spec:
   kafka:
-    version: 3.8.0
-    metadataVersion: 3.8-IV0
+    version: 4.2.0
+    metadataVersion: 4.2-IV0
     listeners:
       - name: plain
         port: 9092
@@ -118,7 +118,7 @@ EOF
 # Topics
 for topic in orders.events inventory.events payments.events notifications.events; do
 cat <<EOF | kubectl apply -f -
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaTopic
 metadata:
   name: ${topic}

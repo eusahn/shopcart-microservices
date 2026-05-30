@@ -12,6 +12,7 @@ spec:
     - { server: "https://kubernetes.default.svc", namespace: platform       }
     - { server: "https://kubernetes.default.svc", namespace: observability  }
     - { server: "https://kubernetes.default.svc", namespace: argo-rollouts  }
+    - { server: "https://kubernetes.default.svc", namespace: argocd        }
   clusterResourceWhitelist:
     - { group: "*", kind: "*" }
   namespaceResourceWhitelist:
