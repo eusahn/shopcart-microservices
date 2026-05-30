@@ -2,9 +2,17 @@
 # Provisions a Postgres cluster per service via CloudNativePG, plus Redis and Kafka.
 set -euo pipefail
 
-# Wait for operators to be ready
+# Wait for operators *AND their CRDs*. "Deployment Available" can land seconds
+# before the CRDs finish establishing, so applying CRs immediately races.
 kubectl -n cnpg-system wait --for=condition=Available deploy/cnpg-controller-manager --timeout=180s
 kubectl -n kafka       wait --for=condition=Available deploy/strimzi-cluster-operator --timeout=180s
+
+echo "waiting for CRDs to be established…"
+kubectl wait --for=condition=established --timeout=120s \
+  crd/clusters.postgresql.cnpg.io \
+  crd/kafkas.kafka.strimzi.io \
+  crd/kafkanodepools.kafka.strimzi.io \
+  crd/kafkatopics.kafka.strimzi.io
 
 # --- Per-service Postgres clusters ---
 for svc in catalog user order inventory; do
