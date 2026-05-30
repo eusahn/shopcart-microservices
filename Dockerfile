@@ -1,4 +1,4 @@
-# Shared multi-stage Dockerfile for every Node service in the monorepo.
+# Shared multi-stage Dockerfile (rev 2) for every Node service in the monorepo.
 # Build with:  docker build --build-arg SERVICE=catalog-service -t shopcart/catalog-service .
 #
 # Each service is built once with full workspace context (pnpm needs the workspace
