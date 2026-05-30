@@ -1,7 +1,7 @@
 serviceName: frontend
 image:
   repository: ghcr.io/eusahn/frontend
-  tag: "55c182d"
+  tag: "b2957df"
   pullPolicy: IfNotPresent
 replicas: 1
 ports: { http: 8080, grpc: 0, metrics: 0 }
