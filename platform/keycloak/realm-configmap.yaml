@@ -19,7 +19,7 @@ data:
           "publicClient": true,
           "standardFlowEnabled": true,
           "directAccessGrantsEnabled": true,
-          "redirectUris": ["http://shop.local/*", "http://localhost:3000/*"],
+          "redirectUris": ["http://localhost:5173/*", "http://localhost:5174/*", "http://localhost:4173/*", "http://shop.local/*"],
           "webOrigins": ["+"]
         }
       ],
