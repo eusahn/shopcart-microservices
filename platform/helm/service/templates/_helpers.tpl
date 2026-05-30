@@ -17,9 +17,11 @@ app.kubernetes.io/name: {{ include "svc.name" . }}
 {{- if .Values.linkerd.inject }}
 linkerd.io/inject: enabled
 config.linkerd.io/proxy-await: "enabled"
-{{- /* Mark Redis (6379) and Kafka (9092) as opaque so Linkerd doesn't try to
-       HTTP-parse them. Postgres (5432) is on Linkerd's default list. */}}
-config.linkerd.io/opaque-ports: "6379,9092"
+{{- /* Bypass Linkerd entirely for Redis (6379) and Kafka (9092). opaque-ports
+       wasn't enough — proxy still hangs on service discovery. Skip-ports means
+       traffic goes directly without mTLS or interception. */}}
+config.linkerd.io/skip-outbound-ports: "6379,9092"
+config.linkerd.io/skip-inbound-ports:  "6379,9092"
 {{- end }}
 prometheus.io/scrape: "true"
 prometheus.io/port: "{{ .Values.ports.metrics }}"
