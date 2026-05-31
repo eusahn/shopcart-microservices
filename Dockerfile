@@ -28,6 +28,10 @@ FROM proto AS builder
 ARG SERVICE
 ENV SERVICE=${SERVICE}
 RUN test -n "$SERVICE" || (echo "SERVICE build-arg is required" && exit 1)
+# Build proto package first so its dist/ exists before downstream services
+# try to import from `@shopcart/proto/*`. pnpm runs builds in parallel by
+# default; this guarantees order. Then build the target service.
+RUN pnpm --filter "@shopcart/proto" build
 RUN pnpm --filter "@shopcart/${SERVICE}..." build
 
 # ---------- runner ----------

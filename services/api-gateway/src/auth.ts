@@ -2,7 +2,17 @@ import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { config } from "./config.js";
 
-const JWKS = createRemoteJWKSet(new URL(`${config.KEYCLOAK_ISSUER}/protocol/openid-connect/certs`));
+// In local dev, the browser hits Keycloak via the host port-forward
+// (http://localhost:8181), so tokens carry that URL as their `iss` claim.
+// The gateway runs inside the cluster though, and can only reach Keycloak via
+// the cluster-internal service. So we split the two: KEYCLOAK_ISSUER is what
+// we *expect* to see in the token; KEYCLOAK_JWKS_URL is where we actually go
+// to fetch the public keys. They differ when the same Keycloak is reachable
+// at multiple hostnames.
+const JWKS_URL =
+  config.KEYCLOAK_JWKS_URL ||
+  `${config.KEYCLOAK_ISSUER}/protocol/openid-connect/certs`;
+const JWKS = createRemoteJWKSet(new URL(JWKS_URL));
 
 export interface AuthedRequest extends FastifyRequest {
   user?: JWTPayload & { sub: string; email?: string; preferred_username?: string };

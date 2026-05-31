@@ -14,6 +14,11 @@ env:
   USER_SERVICE_URL:    "http://user-service.shopcart.svc.cluster.local:50051"
   ORDER_SERVICE_URL:   "http://order-service.shopcart.svc.cluster.local:50051"
   PAYMENT_SERVICE_URL: "http://payment-service.shopcart.svc.cluster.local:50051"
-  KEYCLOAK_ISSUER:     "http://keycloak.platform.svc.cluster.local/realms/shopcart"
+  # ISSUER is what we expect in the token's `iss` claim — must match what the
+  # SPA's browser sees Keycloak as. With the port-forward, that's localhost:8181.
+  # JWKS_URL is where the gateway *pod* fetches public keys; it uses cluster DNS
+  # because the pod can't reach the host's port-forward.
+  KEYCLOAK_ISSUER:     "http://localhost:8181/realms/shopcart"
+  KEYCLOAK_JWKS_URL:   "http://keycloak.platform.svc.cluster.local/realms/shopcart/protocol/openid-connect/certs"
   KEYCLOAK_AUDIENCE:   "account"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4318"
