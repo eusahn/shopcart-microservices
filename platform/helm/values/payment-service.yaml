@@ -1,7 +1,7 @@
 serviceName: payment-service
 image:
   repository: ghcr.io/eusahn/payment-service
-  tag: "f3cb2a6"
+  tag: "d54a069"
   pullPolicy: IfNotPresent
 ports: { http: 0, grpc: 50051, metrics: 9090 }
 env:

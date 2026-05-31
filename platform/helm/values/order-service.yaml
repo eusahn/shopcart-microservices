@@ -1,7 +1,7 @@
 serviceName: order-service
 image:
   repository: ghcr.io/eusahn/order-service
-  tag: "f3cb2a6"
+  tag: "d54a069"
   pullPolicy: IfNotPresent
 replicas: 2
 ports: { http: 0, grpc: 50051, metrics: 9090 }
